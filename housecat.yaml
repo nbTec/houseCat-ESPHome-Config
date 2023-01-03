@@ -1,0 +1,1171 @@
+esphome:
+  name: housecat
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+    
+status_led:
+  pin: GPIO33
+
+# Enable logging
+logger:
+
+ethernet:
+  type: LAN8720
+  mdc_pin: GPIO23
+  mdio_pin: GPIO18
+  clk_mode: GPIO0_IN
+  phy_addr: 0
+  power_pin: GPIO13
+  
+i2c:
+  sda: 16
+  scl: 4
+  frequency: 100kHz
+  
+# DAC
+dac7678:
+    address: 0x4A
+    id: dac7678_hub1
+    internal_reference: true
+
+# Analog outputs
+output:
+- platform: dac7678
+  dac7678_id: 'dac7678_hub1'
+  channel: 0
+  id: 'dac7678_1_ch0'
+  max_power: 0.5
+- platform: dac7678
+  dac7678_id: 'dac7678_hub1'
+  channel: 1
+  id: 'dac7678_1_ch1'
+  max_power: 0.5
+- platform: dac7678
+  dac7678_id: 'dac7678_hub1'
+  channel: 2
+  id: 'dac7678_1_ch2'
+  max_power: 0.5
+- platform: dac7678
+  dac7678_id: 'dac7678_hub1'
+  channel: 3
+  id: 'dac7678_1_ch3'
+  max_power: 0.5
+- platform: dac7678
+  dac7678_id: 'dac7678_hub1'
+  channel: 4
+  id: 'dac7678_1_ch4'
+  max_power: 0.5
+- platform: dac7678
+  dac7678_id: 'dac7678_hub1'
+  channel: 5
+  id: 'dac7678_1_ch5'
+  max_power: 0.5
+- platform: dac7678
+  dac7678_id: 'dac7678_hub1'
+  channel: 6
+  id: 'dac7678_1_ch6'
+  max_power: 0.5
+- platform: dac7678
+  dac7678_id: 'dac7678_hub1'
+  channel: 7
+  id: 'dac7678_1_ch7'
+  max_power: 0.5
+  
+light:
+  - platform: monochromatic
+    name: "Dimmer 1"
+    output: dac7678_1_ch2
+  - platform: monochromatic
+    name: "Dimmer 2"
+    output: dac7678_1_ch0
+  - platform: monochromatic
+    name: "Dimmer 3"
+    output: dac7678_1_ch3
+  - platform: monochromatic
+    name: "Dimmer 4"
+    output: dac7678_1_ch1
+  - platform: monochromatic
+    name: "Dimmer 5"
+    output: dac7678_1_ch7
+  - platform: monochromatic
+    name: "Dimmer 6"
+    output: dac7678_1_ch5
+  - platform: monochromatic
+    name: "Dimmer 7"
+    output: dac7678_1_ch6
+  - platform: monochromatic
+    name: "Dimmer 8"
+    output: dac7678_1_ch4
+    
+ # IO Expanders 
+mcp23017:
+  - id: 'mcp23017_inputs_1'
+    address: 0x20
+    open_drain_interrupt: true
+  - id: 'mcp23017_inputs_2'
+    address: 0x21
+    open_drain_interrupt: true
+  - id: 'mcp23017_inputs_3'
+    address: 0x22
+    open_drain_interrupt: true
+  - id: 'mcp23017_inputs_4'
+    address: 0x23
+    open_drain_interrupt: true
+  - id: 'mcp23017_outputs_1'
+    address: 0x24
+  - id: 'mcp23017_outputs_2'
+    address: 0x25
+  - id: 'mcp23017_outputs_3'
+    address: 0x26
+  - id: 'mcp23017_outputs_4'
+    address: 0x27
+ 
+# Digital Inputs
+binary_sensor:
+  - platform: gpio
+    name: "Digital Input 1"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 9
+      mode:
+        input: true
+      interrupt: CHANGE
+    on_press:
+      then:
+        - switch.toggle: digital_output_1
+  - platform: gpio
+    name: "Digital Input 2"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 11
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 3"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 13
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 4"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 15
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 5"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 6
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 6"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 4
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 7"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 2
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 8"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 0
+      mode:
+        input: true
+      interrupt: CHANGE
+      
+  - platform: gpio
+    name: "Digital Input 9"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 6
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 10"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 4
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 11"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 9
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 12"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 11
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 13"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 13
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 14"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 15
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 15"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 2
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 16"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 0
+      mode:
+        input: true
+      interrupt: CHANGE
+      
+  - platform: gpio
+    name: "Digital Input 17"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 9
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 18"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 11
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 19"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 13
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 20"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 15
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 21"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 6
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 22"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 4
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 23"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 2
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 24"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 0
+      mode:
+        input: true
+      interrupt: CHANGE
+      
+  - platform: gpio
+    name: "Digital Input 25"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 6
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 26"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 4
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 27"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 9
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 28"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 11
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 29"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 13
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 30"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 15
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 31"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 2
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 32"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 0
+      mode:
+        input: true
+      interrupt: CHANGE
+      
+  - platform: gpio
+    name: "Digital Input 33"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 8
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 34"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 10
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 35"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 12
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 36"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 14
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 37"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 7
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 38"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 5
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 39"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 3
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 40"
+    pin:
+      mcp23xxx: mcp23017_inputs_1
+      number: 1
+      mode:
+        input: true
+      interrupt: CHANGE
+      
+  - platform: gpio
+    name: "Digital Input 41"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 7
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 42"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 5
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 43"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 8
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 44"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 10
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 45"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 12
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 46"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 14
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 47"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 3
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 48"
+    pin:
+      mcp23xxx: mcp23017_inputs_2
+      number: 1
+      mode:
+        input: true
+      interrupt: CHANGE
+      
+  - platform: gpio
+    name: "Digital Input 49"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 8
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 50"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 10
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 51"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 12
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 52"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 14
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 53"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 7
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 54"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 5
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 55"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 3
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 56"
+    pin:
+      mcp23xxx: mcp23017_inputs_3
+      number: 1
+      mode:
+        input: true
+      interrupt: CHANGE
+      
+  - platform: gpio
+    name: "Digital Input 57"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 7
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 58"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 5
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 59"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 8
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 60"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 10
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 61"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 12
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 62"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 14
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 63"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 3
+      mode:
+        input: true
+      interrupt: CHANGE
+  - platform: gpio
+    name: "Digital Input 64"
+    pin:
+      mcp23xxx: mcp23017_inputs_4
+      number: 1
+      mode:
+        input: true
+      interrupt: CHANGE
+
+# Digital Outputs
+switch:
+  - platform: gpio
+    name: "Digital_Output_1"
+    id: "digital_output_1"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 0
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 2"
+    id: "digital_output_2"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 1
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 3"
+    id: "digital_output_3"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 2
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 4"
+    id: "digital_output_4"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 3
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 5"
+    id: "digital_output_5"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 4
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 6"
+    id: "digital_output_6"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 5
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 7"
+    id: "digital_output_7"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 6
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 8"
+    id: "digital_output_8"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 7
+      mode:
+        output: true
+
+  - platform: gpio
+    name: "Digital Output 9"
+    id: "digital_output_9"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 15
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 10"
+    id: "digital_output_10"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 14
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 11"
+    id: "digital_output_11"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 13
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 12"
+    id: "digital_output_12"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 12
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 13"
+    id: "digital_output_13"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 11
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 14"
+    id: "digital_output_14"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 10
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 15"
+    id: "digital_output_15"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 9
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 16"
+    id: "digital_output_16"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 8
+      mode:
+        output: true
+
+  - platform: gpio
+    name: "Digital Output 17"
+    id: "digital_output_17"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 0
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 18"
+    id: "digital_output_18"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 1
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 19"
+    id: "digital_output_19"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 2
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 20"
+    id: "digital_output_20"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 3
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 21"
+    id: "digital_output_21"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 4
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 22"
+    id: "digital_output_22"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 5
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 23"
+    id: "digital_output_23"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 6
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 24"
+    id: "digital_output_24"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 7
+      mode:
+        output: true
+
+  - platform: gpio
+    name: "Digital Output 25"
+    id: "digital_output_25"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 15
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 26"
+    id: "digital_output_26"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 14
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 27"
+    id: "digital_output_27"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 13
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 28"
+    id: "digital_output_28"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 12
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 29"
+    id: "digital_output_29"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 11
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 30"
+    id: "digital_output_30"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 10
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 31"
+    id: "digital_output_31"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 9
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 32"
+    id: "digital_output_32"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 8
+      mode:
+        output: true
+
+  - platform: gpio
+    name: "Digital Output 33"
+    id: "digital_output_33"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 15
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 34"
+    id: "digital_output_34"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 14
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 35"
+    id: "digital_output_35"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 13
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 36"
+    id: "digital_output_36"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 12
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 37"
+    id: "digital_output_37"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 11
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 38"
+    id: "digital_output_38"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 10
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 39"
+    id: "digital_output_39"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 9
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 40"
+    id: "digital_output_40"
+    pin:
+      mcp23xxx: mcp23017_outputs_1
+      number: 8
+      mode:
+        output: true
+
+  - platform: gpio
+    name: "Digital Output 41"
+    id: "digital_output_41"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 0
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 42"
+    id: "digital_output_42"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 1
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 43"
+    id: "digital_output_43"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 2
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 44"
+    id: "digital_output_44"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 3
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 45"
+    id: "digital_output_45"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 4
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 46"
+    id: "digital_output_46"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 5
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 47"
+    id: "digital_output_47"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 6
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 48"
+    id: "digital_output_48"
+    pin:
+      mcp23xxx: mcp23017_outputs_2
+      number: 7
+      mode:
+        output: true
+
+  - platform: gpio
+    name: "Digital Output 49"
+    id: "digital_output_49"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 15
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 50"
+    id: "digital_output_50"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 14
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 51"
+    id: "digital_output_51"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 13
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 52"
+    id: "digital_output_52"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 12
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 53"
+    id: "digital_output_53"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 11
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 54"
+    id: "digital_output_54"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 10
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 55"
+    id: "digital_output_55"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 9
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 56"
+    id: "digital_output_56"
+    pin:
+      mcp23xxx: mcp23017_outputs_3
+      number: 8
+      mode:
+        output: true
+ 
+  - platform: gpio
+    name: "Digital Output 57"
+    id: "digital_output_57"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 0
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 58"
+    id: "digital_output_58"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 1
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 59"
+    id: "digital_output_59"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 2
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 60"
+    id: "digital_output_60"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 3
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 61"
+    id: "digital_output_61"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 4
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 62"
+    id: "digital_output_62"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 5
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 63"
+    id: "digital_output_63"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 6
+      mode:
+        output: true
+  - platform: gpio
+    name: "Digital Output 64"
+    id: "digital_output_64"
+    pin:
+      mcp23xxx: mcp23017_outputs_4
+      number: 7
+      mode:
+        output: true
